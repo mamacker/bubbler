@@ -1,0 +1,13 @@
+[Unit]
+Description=Bubbler Stat Manager
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/nodejs /home/pi/bubbler/index.js
+StandardOutput=syslog
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=bubbler.service
+
