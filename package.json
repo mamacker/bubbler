@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mamacker/bubbler#readme",
   "dependencies": {
+    "fauxmojs": "^1.0.3",
     "raspi": "^4.0.0",
     "raspi-gpio": "^4.0.2",
     "raspi-pwm": "^4.0.2",

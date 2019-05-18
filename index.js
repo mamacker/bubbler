@@ -79,6 +79,7 @@ raspi.init(() => {
               https.get('https://theamackers.com/bubbler/set?which=led&level=0', (res) => {});
             }, 100);
           }
+          checkSite();
         }
       }
     ]
