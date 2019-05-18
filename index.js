@@ -2,6 +2,12 @@ const raspi = require('raspi');
 const gpio = require('raspi-gpio');
 const pwm = require('raspi-pwm');
 const https = require('https');
+const FauxMo = require('fauxmojs');
+const os = require('os');
+const dns = require('dns');
+
+let ipAddress = '';
+dns.lookup(os.hostname()+".local", (e,a,f) => { console.log("IP address: ", a, "Errors: ", e); ipAddress = a; });
 
 var pumpVal = 0;
 var direction = 0.1;
@@ -52,4 +58,29 @@ raspi.init(() => {
   pump.write(0);
   solenoidPin.write(0);
   setInterval(checkSite, 3000);  
+
+  console.log("Registering Faux Alexa outlet...");
+  let fauxMo = new FauxMo({
+    ipAddress: ipAddress,
+    devices: [{
+        name: 'bubbler',
+        port: 11000,
+        handler: (action) => {
+          console.log('bubbler:', action);
+          isEnabled = (action == "on");
+          if (isEnabled) {
+            https.get('https://theamackers.com/bubbler/set?which=pump&level=1', (res) => {});
+            setTimeout(() => {
+              https.get('https://theamackers.com/bubbler/set?which=led&level=1', (res) => {});
+            }, 100);
+          } else {
+            https.get('https://theamackers.com/bubbler/set?which=pump&level=0', (res) => {});
+            setTimeout(() => {
+              https.get('https://theamackers.com/bubbler/set?which=led&level=0', (res) => {});
+            }, 100);
+          }
+        }
+      }
+    ]
+  });
 });
